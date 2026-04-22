@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_application_day7/screens/products_screen.dart';
+
+// ignore: must_be_immutable
+class AuthButtom extends StatelessWidget {
+  AuthButtom({super.key, required this.ButtomText});
+  // ignore: non_constant_identifier_names
+  String ButtomText = '';
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xff4E0189),
+          minimumSize: Size(double.infinity, 60),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Products()),
+          );
+        },
+        child: Text(
+          ButtomText,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+}
