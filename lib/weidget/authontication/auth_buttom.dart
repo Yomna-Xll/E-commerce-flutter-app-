@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_day7/screens/main_pages.dart';
 import 'package:flutter_application_day7/screens/products_screen.dart';
 
 // ignore: must_be_immutable
@@ -21,7 +22,7 @@ class AuthButtom extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Products()),
+            MaterialPageRoute(builder: (context) => MainPages()),
           );
         },
         child: Text(

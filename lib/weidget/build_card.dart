@@ -16,6 +16,7 @@ class _BuildCardState extends State<BuildCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 150,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
