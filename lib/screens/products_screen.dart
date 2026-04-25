@@ -18,12 +18,24 @@ class _ProductsState extends State<Products> {
   void initState() {
     super.initState();
     print('-----------');
-    getdata();
+    myproducts1 = getdata();
     getcategory();
   }
 
-  List<ProductsModel> myproducts1 = [];
+  late Future<List<ProductsModel>> myproducts1;
   List<ModelCategory> mycategory = [];
+  List<ProductsModel> productsList = [];
+  Future<void> deletedata(int id) async {
+    try {
+      final res2 = await dio.delete(
+        "https://api.escuelajs.co/api/v1/products/$id",
+      );
+      print("Success: ${res2.data}");
+    } catch (e) {
+      print("$e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +56,7 @@ class _ProductsState extends State<Products> {
         ),
         centerTitle: true,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
@@ -54,23 +67,48 @@ class _ProductsState extends State<Products> {
                 itemCount: mycategory.length,
 
                 itemBuilder: (BuildContext context, int index) {
-                  return BuildHorizontalChips(category1: mycategory[index] );
+                  return BuildHorizontalChips(category1: mycategory[index]);
                 },
               ),
             ),
             SizedBox(height: 20),
             Expanded(
               flex: 4,
-              child: GridView.builder(
-                itemCount: myproducts1.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 35,
-                  crossAxisSpacing: 25,
-                  childAspectRatio: 2.7 / 3,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return BuildCard(products: myproducts1[index]);
+              child: FutureBuilder<List<ProductsModel>>(
+                future: myproducts1,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error'));
+                  } else if (snapshot.hasData) {
+                    if (productsList.isEmpty) {
+                      productsList = snapshot.data!;
+                    }
+
+                    return GridView.builder(
+                      itemCount: productsList.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 35,
+                            crossAxisSpacing: 25,
+                            childAspectRatio: 2.7 / 3,
+                          ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return BuildCard(
+                          products: productsList[index],
+                          onPressed: () async {
+                            setState(() {
+                              productsList.removeAt(index); 
+                            });
+                            await deletedata(productsList[index].id);
+                          },
+                        );
+                      },
+                    );
+                  }
+                  return SizedBox();
                 },
               ),
             ),
@@ -82,26 +120,26 @@ class _ProductsState extends State<Products> {
 
   final Dio dio = Dio();
 
-  Future<void> getdata() async {
-    final res = await dio.get('https://api.escuelajs.co/api/v1/products');
-    for (var element in res.data) {
-      final ProductsModel product = ProductsModel.fromjson(element);
-      myproducts1.add(product);
+  Future<List<ProductsModel>> getdata() async {
+    try {
+      final res = await dio.get('https://api.escuelajs.co/api/v1/products');
+      return (res.data as List).map((e) => ProductsModel.fromjson(e)).toList();
+    } catch (e) {
+      return [];
     }
-
-    setState(() {});
-    print("lenght: ${myproducts1.length}");
+    // print("lenght: ${myproducts1.length}");
   }
 
-  Future<void> getcategory() async {
+  Future<List<ModelCategory>> getcategory() async {
     final res2 = await dio.get('https://api.escuelajs.co/api/v1/categories');
-    print(res2);
-    for (var element in res2.data) {
-      final ModelCategory cat1 = ModelCategory.fromjson(element);
-      mycategory.add(cat1);
-    }
+    // print(res2);
+    setState(() {
+      mycategory = (res2.data as List)
+          .map((e) => ModelCategory.fromjson(e))
+          .toList();
+    });
 
-    setState(() {});
-    print("lenght: ${mycategory.length}");
+    return mycategory;
+    // print("lenght: ${mycategory.length}");
   }
 }

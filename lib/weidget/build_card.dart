@@ -5,8 +5,8 @@ import 'package:flutter_application_day7/screens/products_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BuildCard extends StatefulWidget {
-  BuildCard({super.key, required this.products});
-
+  BuildCard({super.key, required this.products, this.onPressed});
+  VoidCallback? onPressed;
   ProductsModel products;
   @override
   State<BuildCard> createState() => _BuildCardState();
@@ -103,7 +103,10 @@ class _BuildCardState extends State<BuildCard> {
                       borderRadius: BorderRadius.circular(8),
                     ),
 
-                    child: Icon(Icons.add, color: Colors.white),
+                    child: IconButton(
+                      onPressed: widget.onPressed,
+                      icon: Icon(Icons.remove, color: Colors.white),
+                    ),
                   ),
                 ],
               ),

@@ -4,9 +4,10 @@ import 'package:flutter_application_day7/screens/products_screen.dart';
 
 // ignore: must_be_immutable
 class AuthButtom extends StatelessWidget {
-  AuthButtom({super.key, required this.ButtomText});
+  AuthButtom({super.key, required this.ButtomText,required this.onPressed});
   // ignore: non_constant_identifier_names
   String ButtomText = '';
+  VoidCallback onPressed;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -19,12 +20,7 @@ class AuthButtom extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MainPages()),
-          );
-        },
+        onPressed: onPressed,
         child: Text(
           ButtomText,
           style: TextStyle(

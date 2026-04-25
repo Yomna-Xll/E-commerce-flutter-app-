@@ -4,13 +4,14 @@ import 'package:flutter/foundation.dart';
 
 class ProductsModel {
   final String path, title, price;
-  ProductsModel({required this.path, required this.title, required this.price});
+  final int id;
+  ProductsModel({required this.path, required this.title, required this.price , required this.id});
   factory ProductsModel.fromjson(Map<String, dynamic> json) {
     return ProductsModel(
+      id: json["id"],
       path: json['category']['image'],
       title: json['title'],
       price: json['price'].toString(),
     );
   }
-
 }
